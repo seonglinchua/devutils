@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevUtils - Essential Developer Utilities</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .tagline {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .nav-tab {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: white;
+            color: #667eea;
+            border-color: white;
+        }
+
+        .tool-container {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tool-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            resize: vertical;
+        }
+
+        textarea {
+            min-height: 150px;
+        }
+
+        textarea:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #c33;
+        }
+
+        .success {
+            background: #efe;
+            color: #383;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #383;
+        }
+
+        .info {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #1976d2;
+        }
+
+        .hash-results, .jwt-results {
+            margin-top: 20px;
+        }
+
+        .hash-item, .jwt-section {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .hash-item label, .jwt-section label {
+            font-size: 0.9em;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .hash-value, .jwt-value {
+            font-family: 'Monaco', 'Courier New', monospace;
+            word-break: break-all;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        .color-preview {
+            width: 100%;
+            height: 100px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 2px solid #e0e0e0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .timestamp-display {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .timestamp-item {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .timestamp-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .timestamp-label {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .timestamp-value {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.95em;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .nav-tab {
+                padding: 10px 16px;
+                font-size: 0.9em;
+            }
+
+            .tool-container {
+                padding: 20px;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ DevUtils</h1>
+            <p class="tagline">Essential developer utilities in your pocket</p>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="showTool('json')">JSON Formatter</button>
+            <button class="nav-tab" onclick="showTool('base64')">Base64</button>
+            <button class="nav-tab" onclick="showTool('hash')">Hash Generator</button>
+            <button class="nav-tab" onclick="showTool('color')">Color Converter</button>
+            <button class="nav-tab" onclick="showTool('url')">URL Encoder</button>
+            <button class="nav-tab" onclick="showTool('jwt')">JWT Decoder</button>
+            <button class="nav-tab" onclick="showTool('timestamp')">Timestamp</button>
+        </nav>
+
+        <!-- JSON Formatter -->
+        <div id="json" class="tool-container active">
+            <h2>JSON Formatter</h2>
+            <div class="input-group">
+                <label>Input JSON:</label>
+                <textarea id="jsonInput" placeholder='{"name":"DevUtils","features":7}'></textarea>
+            </div>
+            <div class="button-group">
+                <button onclick="formatJSON()">Format / Prettify</button>
+                <button onclick="minifyJSON()">Minify</button>
+                <button onclick="validateJSON()">Validate</button>
+            </div>
+            <div id="jsonOutput"></div>
+        </div>
+
+        <!-- Base64 Encoder/Decoder -->
+        <div id="base64" class="tool-container">
+            <h2>Base64 Encoder/Decoder</h2>
+            <div class="input-group">
+                <label>Input Text:</label>
+                <textarea id="base64Input" placeholder="Enter text to encode or Base64 to decode"></textarea>
+            </div>
+            <div class="button-group">
+                <button onclick="encodeBase64()">Encode to Base64</button>
+                <button onclick="decodeBase64()">Decode from Base64</button>
+            </div>
+            <div class="input-group">
+                <label>Output:</label>
+                <textarea id="base64Output" readonly></textarea>
+            </div>
+            <div id="base64Message"></div>
+        </div>
+
+        <!-- Hash Generator -->
+        <div id="hash" class="tool-container">
+            <h2>Hash Generator</h2>
+            <div class="input-group">
+                <label>Input Text:</label>
+                <textarea id="hashInput" placeholder="Enter text to hash"></textarea>
+            </div>
+            <div class="button-group">
+                <button onclick="generateHashes()">Generate All Hashes</button>
+            </div>
+            <div id="hashResults" class="hash-results"></div>
+        </div>
+
+        <!-- Color Converter -->
+        <div id="color" class="tool-container">
+            <h2>Color Converter</h2>
+            <div class="input-group">
+                <label>HEX Color Code:</label>
+                <input type="text" id="colorInput" placeholder="#667eea" value="#667eea">
+            </div>
+            <div class="button-group">
+                <button onclick="convertColor()">Convert Color</button>
+            </div>
+            <div id="colorPreview" class="color-preview"></div>
+            <div id="colorOutput"></div>
+        </div>
+
+        <!-- URL Encoder/Decoder -->
+        <div id="url" class="tool-container">
+            <h2>URL Encoder/Decoder</h2>
+            <div class="input-group">
+                <label>Input URL or Text:</label>
+                <textarea id="urlInput" placeholder="https://example.com?name=John Doe&age=30"></textarea>
+            </div>
+            <div class="button-group">
+                <button onclick="encodeURL()">Encode URL</button>
+                <button onclick="decodeURL()">Decode URL</button>
+            </div>
+            <div class="input-group">
+                <label>Output:</label>
+                <textarea id="urlOutput" readonly></textarea>
+            </div>
+            <div id="urlMessage"></div>
+        </div>
+
+        <!-- JWT Decoder -->
+        <div id="jwt" class="tool-container">
+            <h2>JWT Decoder</h2>
+            <div class="info">
+                <strong>Note:</strong> This tool only decodes JWT tokens. It does not verify signatures.
+            </div>
+            <div class="input-group">
+                <label>JWT Token:</label>
+                <textarea id="jwtInput" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"></textarea>
+            </div>
+            <div class="button-group">
+                <button onclick="decodeJWT()">Decode JWT</button>
+            </div>
+            <div id="jwtResults" class="jwt-results"></div>
+        </div>
+
+        <!-- Timestamp Converter -->
+        <div id="timestamp" class="tool-container">
+            <h2>Timestamp Converter</h2>
+            <div class="button-group">
+                <button onclick="getCurrentTimestamp()">Get Current Timestamp</button>
+            </div>
+            <div class="input-group">
+                <label>Unix Timestamp (seconds or milliseconds):</label>
+                <input type="text" id="timestampInput" placeholder="1700000000">
+            </div>
+            <div class="button-group">
+                <button onclick="convertTimestampToDate()">Convert to Date</button>
+            </div>
+            <div class="input-group">
+                <label>Date/Time (ISO format or local):</label>
+                <input type="text" id="dateInput" placeholder="2023-11-15 10:30:00">
+            </div>
+            <div class="button-group">
+                <button onclick="convertDateToTimestamp()">Convert to Timestamp</button>
+            </div>
+            <div id="timestampResults"></div>
+        </div>
+
+        <footer>
+            <p>🔒 Privacy-focused • ⚡ Client-side processing • 💾 Works offline</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">All operations are performed locally in your browser</p>
+        </footer>
+    </div>
+
+    <script>
+        // Navigation
+        function showTool(toolId) {
+            document.querySelectorAll('.tool-container').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(toolId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // JSON Formatter
+        function formatJSON() {
+            const input = document.getElementById('jsonInput').value;
+            const output = document.getElementById('jsonOutput');
+
+            try {
+                const parsed = JSON.parse(input);
+                const formatted = JSON.stringify(parsed, null, 2);
+                document.getElementById('jsonInput').value = formatted;
+                output.innerHTML = '<div class="success">✓ JSON formatted successfully!</div>';
+            } catch (error) {
+                output.innerHTML = `<div class="error">✗ Invalid JSON: ${error.message}</div>`;
+            }
+        }
+
+        function minifyJSON() {
+            const input = document.getElementById('jsonInput').value;
+            const output = document.getElementById('jsonOutput');
+
+            try {
+                const parsed = JSON.parse(input);
+                const minified = JSON.stringify(parsed);
+                document.getElementById('jsonInput').value = minified;
+                output.innerHTML = '<div class="success">✓ JSON minified successfully!</div>';
+            } catch (error) {
+                output.innerHTML = `<div class="error">✗ Invalid JSON: ${error.message}</div>`;
+            }
+        }
+
+        function validateJSON() {
+            const input = document.getElementById('jsonInput').value;
+            const output = document.getElementById('jsonOutput');
+
+            try {
+                JSON.parse(input);
+                output.innerHTML = '<div class="success">✓ Valid JSON!</div>';
+            } catch (error) {
+                output.innerHTML = `<div class="error">✗ Invalid JSON: ${error.message}</div>`;
+            }
+        }
+
+        // Base64 Encoder/Decoder
+        function encodeBase64() {
+            const input = document.getElementById('base64Input').value;
+            const output = document.getElementById('base64Output');
+            const message = document.getElementById('base64Message');
+
+            try {
+                const encoded = btoa(unescape(encodeURIComponent(input)));
+                output.value = encoded;
+                message.innerHTML = '<div class="success">✓ Encoded to Base64 successfully!</div>';
+            } catch (error) {
+                message.innerHTML = `<div class="error">✗ Encoding error: ${error.message}</div>`;
+            }
+        }
+
+        function decodeBase64() {
+            const input = document.getElementById('base64Input').value;
+            const output = document.getElementById('base64Output');
+            const message = document.getElementById('base64Message');
+
+            try {
+                const decoded = decodeURIComponent(escape(atob(input)));
+                output.value = decoded;
+                message.innerHTML = '<div class="success">✓ Decoded from Base64 successfully!</div>';
+            } catch (error) {
+                message.innerHTML = `<div class="error">✗ Invalid Base64: ${error.message}</div>`;
+            }
+        }
+
+        // Hash Generator
+        async function generateHashes() {
+            const input = document.getElementById('hashInput').value;
+            const results = document.getElementById('hashResults');
+
+            if (!input) {
+                results.innerHTML = '<div class="error">✗ Please enter text to hash</div>';
+                return;
+            }
+
+            try {
+                const encoder = new TextEncoder();
+                const data = encoder.encode(input);
+
+                // SHA-256
+                const sha256Buffer = await crypto.subtle.digest('SHA-256', data);
+                const sha256Hash = Array.from(new Uint8Array(sha256Buffer))
+                    .map(b => b.toString(16).padStart(2, '0'))
+                    .join('');
+
+                // SHA-1
+                const sha1Buffer = await crypto.subtle.digest('SHA-1', data);
+                const sha1Hash = Array.from(new Uint8Array(sha1Buffer))
+                    .map(b => b.toString(16).padStart(2, '0'))
+                    .join('');
+
+                // MD5 (simple implementation)
+                const md5Hash = simpleMD5(input);
+
+                results.innerHTML = `
+                    <div class="hash-item">
+                        <label>MD5:</label>
+                        <div class="hash-value">${md5Hash}</div>
+                    </div>
+                    <div class="hash-item">
+                        <label>SHA-1:</label>
+                        <div class="hash-value">${sha1Hash}</div>
+                    </div>
+                    <div class="hash-item">
+                        <label>SHA-256:</label>
+                        <div class="hash-value">${sha256Hash}</div>
+                    </div>
+                `;
+            } catch (error) {
+                results.innerHTML = `<div class="error">✗ Error generating hashes: ${error.message}</div>`;
+            }
+        }
+
+        // Simple MD5 implementation
+        function simpleMD5(string) {
+            function rotateLeft(value, shift) {
+                return (value << shift) | (value >>> (32 - shift));
+            }
+
+            function addUnsigned(x, y) {
+                return (x + y) >>> 0;
+            }
+
+            function md5cycle(x, k) {
+                let a = x[0], b = x[1], c = x[2], d = x[3];
+
+                a = ff(a, b, c, d, k[0], 7, 0xD76AA478);
+                d = ff(d, a, b, c, k[1], 12, 0xE8C7B756);
+                c = ff(c, d, a, b, k[2], 17, 0x242070DB);
+                b = ff(b, c, d, a, k[3], 22, 0xC1BDCEEE);
+                a = ff(a, b, c, d, k[4], 7, 0xF57C0FAF);
+                d = ff(d, a, b, c, k[5], 12, 0x4787C62A);
+                c = ff(c, d, a, b, k[6], 17, 0xA8304613);
+                b = ff(b, c, d, a, k[7], 22, 0xFD469501);
+                a = ff(a, b, c, d, k[8], 7, 0x698098D8);
+                d = ff(d, a, b, c, k[9], 12, 0x8B44F7AF);
+                c = ff(c, d, a, b, k[10], 17, 0xFFFF5BB1);
+                b = ff(b, c, d, a, k[11], 22, 0x895CD7BE);
+                a = ff(a, b, c, d, k[12], 7, 0x6B901122);
+                d = ff(d, a, b, c, k[13], 12, 0xFD987193);
+                c = ff(c, d, a, b, k[14], 17, 0xA679438E);
+                b = ff(b, c, d, a, k[15], 22, 0x49B40821);
+
+                a = gg(a, b, c, d, k[1], 5, 0xF61E2562);
+                d = gg(d, a, b, c, k[6], 9, 0xC040B340);
+                c = gg(c, d, a, b, k[11], 14, 0x265E5A51);
+                b = gg(b, c, d, a, k[0], 20, 0xE9B6C7AA);
+                a = gg(a, b, c, d, k[5], 5, 0xD62F105D);
+                d = gg(d, a, b, c, k[10], 9, 0x02441453);
+                c = gg(c, d, a, b, k[15], 14, 0xD8A1E681);
+                b = gg(b, c, d, a, k[4], 20, 0xE7D3FBC8);
+                a = gg(a, b, c, d, k[9], 5, 0x21E1CDE6);
+                d = gg(d, a, b, c, k[14], 9, 0xC33707D6);
+                c = gg(c, d, a, b, k[3], 14, 0xF4D50D87);
+                b = gg(b, c, d, a, k[8], 20, 0x455A14ED);
+                a = gg(a, b, c, d, k[13], 5, 0xA9E3E905);
+                d = gg(d, a, b, c, k[2], 9, 0xFCEFA3F8);
+                c = gg(c, d, a, b, k[7], 14, 0x676F02D9);
+                b = gg(b, c, d, a, k[12], 20, 0x8D2A4C8A);
+
+                a = hh(a, b, c, d, k[5], 4, 0xFFFA3942);
+                d = hh(d, a, b, c, k[8], 11, 0x8771F681);
+                c = hh(c, d, a, b, k[11], 16, 0x6D9D6122);
+                b = hh(b, c, d, a, k[14], 23, 0xFDE5380C);
+                a = hh(a, b, c, d, k[1], 4, 0xA4BEEA44);
+                d = hh(d, a, b, c, k[4], 11, 0x4BDECFA9);
+                c = hh(c, d, a, b, k[7], 16, 0xF6BB4B60);
+                b = hh(b, c, d, a, k[10], 23, 0xBEBFBC70);
+                a = hh(a, b, c, d, k[13], 4, 0x289B7EC6);
+                d = hh(d, a, b, c, k[0], 11, 0xEAA127FA);
+                c = hh(c, d, a, b, k[3], 16, 0xD4EF3085);
+                b = hh(b, c, d, a, k[6], 23, 0x04881D05);
+                a = hh(a, b, c, d, k[9], 4, 0xD9D4D039);
+                d = hh(d, a, b, c, k[12], 11, 0xE6DB99E5);
+                c = hh(c, d, a, b, k[15], 16, 0x1FA27CF8);
+                b = hh(b, c, d, a, k[2], 23, 0xC4AC5665);
+
+                a = ii(a, b, c, d, k[0], 6, 0xF4292244);
+                d = ii(d, a, b, c, k[7], 10, 0x432AFF97);
+                c = ii(c, d, a, b, k[14], 15, 0xAB9423A7);
+                b = ii(b, c, d, a, k[5], 21, 0xFC93A039);
+                a = ii(a, b, c, d, k[12], 6, 0x655B59C3);
+                d = ii(d, a, b, c, k[3], 10, 0x8F0CCC92);
+                c = ii(c, d, a, b, k[10], 15, 0xFFEFF47D);
+                b = ii(b, c, d, a, k[1], 21, 0x85845DD1);
+                a = ii(a, b, c, d, k[8], 6, 0x6FA87E4F);
+                d = ii(d, a, b, c, k[15], 10, 0xFE2CE6E0);
+                c = ii(c, d, a, b, k[6], 15, 0xA3014314);
+                b = ii(b, c, d, a, k[13], 21, 0x4E0811A1);
+                a = ii(a, b, c, d, k[4], 6, 0xF7537E82);
+                d = ii(d, a, b, c, k[11], 10, 0xBD3AF235);
+                c = ii(c, d, a, b, k[2], 15, 0x2AD7D2BB);
+                b = ii(b, c, d, a, k[9], 21, 0xEB86D391);
+
+                x[0] = addUnsigned(a, x[0]);
+                x[1] = addUnsigned(b, x[1]);
+                x[2] = addUnsigned(c, x[2]);
+                x[3] = addUnsigned(d, x[3]);
+            }
+
+            function cmn(q, a, b, x, s, t) {
+                a = addUnsigned(addUnsigned(a, q), addUnsigned(x, t));
+                return addUnsigned(rotateLeft(a, s), b);
+            }
+
+            function ff(a, b, c, d, x, s, t) {
+                return cmn((b & c) | (~b & d), a, b, x, s, t);
+            }
+
+            function gg(a, b, c, d, x, s, t) {
+                return cmn((b & d) | (c & ~d), a, b, x, s, t);
+            }
+
+            function hh(a, b, c, d, x, s, t) {
+                return cmn(b ^ c ^ d, a, b, x, s, t);
+            }
+
+            function ii(a, b, c, d, x, s, t) {
+                return cmn(c ^ (b | ~d), a, b, x, s, t);
+            }
+
+            function md51(s) {
+                const n = s.length;
+                const state = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476];
+                let i;
+                for (i = 64; i <= s.length; i += 64) {
+                    md5cycle(state, md5blk(s.substring(i - 64, i)));
+                }
+                s = s.substring(i - 64);
+                const tail = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                for (i = 0; i < s.length; i++) {
+                    tail[i >> 2] |= s.charCodeAt(i) << ((i % 4) << 3);
+                }
+                tail[i >> 2] |= 0x80 << ((i % 4) << 3);
+                if (i > 55) {
+                    md5cycle(state, tail);
+                    for (i = 0; i < 16; i++) tail[i] = 0;
+                }
+                tail[14] = n * 8;
+                md5cycle(state, tail);
+                return state;
+            }
+
+            function md5blk(s) {
+                const md5blks = [];
+                for (let i = 0; i < 64; i += 4) {
+                    md5blks[i >> 2] = s.charCodeAt(i) +
+                        (s.charCodeAt(i + 1) << 8) +
+                        (s.charCodeAt(i + 2) << 16) +
+                        (s.charCodeAt(i + 3) << 24);
+                }
+                return md5blks;
+            }
+
+            function rhex(n) {
+                let s = '';
+                for (let j = 0; j < 4; j++) {
+                    s += ((n >> (j * 8 + 4)) & 0x0F).toString(16) +
+                        ((n >> (j * 8)) & 0x0F).toString(16);
+                }
+                return s;
+            }
+
+            function hex(x) {
+                for (let i = 0; i < x.length; i++) {
+                    x[i] = rhex(x[i]);
+                }
+                return x.join('');
+            }
+
+            return hex(md51(string));
+        }
+
+        // Color Converter
+        function convertColor() {
+            const input = document.getElementById('colorInput').value.trim();
+            const preview = document.getElementById('colorPreview');
+            const output = document.getElementById('colorOutput');
+
+            let hex = input;
+            if (!hex.startsWith('#')) {
+                hex = '#' + hex;
+            }
+
+            // Validate hex
+            const hexRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+            if (!hexRegex.test(hex)) {
+                output.innerHTML = '<div class="error">✗ Invalid HEX color code. Use format: #RRGGBB or #RGB</div>';
+                preview.style.background = 'transparent';
+                return;
+            }
+
+            // Expand shorthand hex
+            if (hex.length === 4) {
+                hex = '#' + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
+            }
+
+            // Convert to RGB
+            const r = parseInt(hex.substring(1, 3), 16);
+            const g = parseInt(hex.substring(3, 5), 16);
+            const b = parseInt(hex.substring(5, 7), 16);
+
+            // Convert to HSL
+            const rNorm = r / 255;
+            const gNorm = g / 255;
+            const bNorm = b / 255;
+
+            const max = Math.max(rNorm, gNorm, bNorm);
+            const min = Math.min(rNorm, gNorm, bNorm);
+            let h, s, l = (max + min) / 2;
+
+            if (max === min) {
+                h = s = 0;
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+                switch (max) {
+                    case rNorm: h = ((gNorm - bNorm) / d + (gNorm < bNorm ? 6 : 0)) / 6; break;
+                    case gNorm: h = ((bNorm - rNorm) / d + 2) / 6; break;
+                    case bNorm: h = ((rNorm - gNorm) / d + 4) / 6; break;
+                }
+            }
+
+            h = Math.round(h * 360);
+            s = Math.round(s * 100);
+            l = Math.round(l * 100);
+
+            preview.style.background = hex;
+            output.innerHTML = `
+                <div class="hash-item">
+                    <label>HEX:</label>
+                    <div class="hash-value">${hex.toUpperCase()}</div>
+                </div>
+                <div class="hash-item">
+                    <label>RGB:</label>
+                    <div class="hash-value">rgb(${r}, ${g}, ${b})</div>
+                </div>
+                <div class="hash-item">
+                    <label>HSL:</label>
+                    <div class="hash-value">hsl(${h}, ${s}%, ${l}%)</div>
+                </div>
+            `;
+        }
+
+        // Initialize with default color
+        convertColor();
+
+        // URL Encoder/Decoder
+        function encodeURL() {
+            const input = document.getElementById('urlInput').value;
+            const output = document.getElementById('urlOutput');
+            const message = document.getElementById('urlMessage');
+
+            try {
+                const encoded = encodeURIComponent(input);
+                output.value = encoded;
+                message.innerHTML = '<div class="success">✓ URL encoded successfully!</div>';
+            } catch (error) {
+                message.innerHTML = `<div class="error">✗ Encoding error: ${error.message}</div>`;
+            }
+        }
+
+        function decodeURL() {
+            const input = document.getElementById('urlInput').value;
+            const output = document.getElementById('urlOutput');
+            const message = document.getElementById('urlMessage');
+
+            try {
+                const decoded = decodeURIComponent(input);
+                output.value = decoded;
+                message.innerHTML = '<div class="success">✓ URL decoded successfully!</div>';
+            } catch (error) {
+                message.innerHTML = `<div class="error">✗ Decoding error (malformed URL): ${error.message}</div>`;
+            }
+        }
+
+        // JWT Decoder
+        function decodeJWT() {
+            const input = document.getElementById('jwtInput').value.trim();
+            const results = document.getElementById('jwtResults');
+
+            if (!input) {
+                results.innerHTML = '<div class="error">✗ Please enter a JWT token</div>';
+                return;
+            }
+
+            try {
+                const parts = input.split('.');
+                if (parts.length !== 3) {
+                    throw new Error('Invalid JWT format. Expected 3 parts separated by dots.');
+                }
+
+                // Decode header
+                const header = JSON.parse(atob(parts[0]));
+
+                // Decode payload
+                const payload = JSON.parse(atob(parts[1]));
+
+                // Signature (just display as-is, don't decode)
+                const signature = parts[2];
+
+                results.innerHTML = `
+                    <div class="jwt-section">
+                        <label>Header:</label>
+                        <div class="jwt-value"><pre>${JSON.stringify(header, null, 2)}</pre></div>
+                    </div>
+                    <div class="jwt-section">
+                        <label>Payload:</label>
+                        <div class="jwt-value"><pre>${JSON.stringify(payload, null, 2)}</pre></div>
+                    </div>
+                    <div class="jwt-section">
+                        <label>Signature (Hash):</label>
+                        <div class="jwt-value">${signature}</div>
+                    </div>
+                `;
+            } catch (error) {
+                results.innerHTML = `<div class="error">✗ Invalid JWT token: ${error.message}</div>`;
+            }
+        }
+
+        // Timestamp Converter
+        function getCurrentTimestamp() {
+            const now = new Date();
+            const results = document.getElementById('timestampResults');
+
+            results.innerHTML = `
+                <div class="timestamp-display">
+                    <div class="timestamp-item">
+                        <div class="timestamp-label">Current Unix Timestamp (seconds):</div>
+                        <div class="timestamp-value">${Math.floor(now.getTime() / 1000)}</div>
+                    </div>
+                    <div class="timestamp-item">
+                        <div class="timestamp-label">Current Unix Timestamp (milliseconds):</div>
+                        <div class="timestamp-value">${now.getTime()}</div>
+                    </div>
+                    <div class="timestamp-item">
+                        <div class="timestamp-label">UTC:</div>
+                        <div class="timestamp-value">${now.toUTCString()}</div>
+                    </div>
+                    <div class="timestamp-item">
+                        <div class="timestamp-label">Local:</div>
+                        <div class="timestamp-value">${now.toString()}</div>
+                    </div>
+                    <div class="timestamp-item">
+                        <div class="timestamp-label">ISO 8601:</div>
+                        <div class="timestamp-value">${now.toISOString()}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function convertTimestampToDate() {
+            const input = document.getElementById('timestampInput').value.trim();
+            const results = document.getElementById('timestampResults');
+
+            if (!input) {
+                results.innerHTML = '<div class="error">✗ Please enter a timestamp</div>';
+                return;
+            }
+
+            try {
+                let timestamp = parseInt(input);
+
+                // If timestamp is in seconds (less than year 3000 in seconds), convert to milliseconds
+                if (timestamp < 32503680000) {
+                    timestamp = timestamp * 1000;
+                }
+
+                const date = new Date(timestamp);
+
+                if (isNaN(date.getTime())) {
+                    throw new Error('Invalid timestamp');
+                }
+
+                results.innerHTML = `
+                    <div class="timestamp-display">
+                        <div class="timestamp-item">
+                            <div class="timestamp-label">UTC:</div>
+                            <div class="timestamp-value">${date.toUTCString()}</div>
+                        </div>
+                        <div class="timestamp-item">
+                            <div class="timestamp-label">Local:</div>
+                            <div class="timestamp-value">${date.toString()}</div>
+                        </div>
+                        <div class="timestamp-item">
+                            <div class="timestamp-label">ISO 8601:</div>
+                            <div class="timestamp-value">${date.toISOString()}</div>
+                        </div>
+                        <div class="timestamp-item">
+                            <div class="timestamp-label">Unix Timestamp (seconds):</div>
+                            <div class="timestamp-value">${Math.floor(date.getTime() / 1000)}</div>
+                        </div>
+                        <div class="timestamp-item">
+                            <div class="timestamp-label">Unix Timestamp (milliseconds):</div>
+                            <div class="timestamp-value">${date.getTime()}</div>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                results.innerHTML = `<div class="error">✗ Invalid timestamp: ${error.message}</div>`;
+            }
+        }
+
+        function convertDateToTimestamp() {
+            const input = document.getElementById('dateInput').value.trim();
+            const results = document.getElementById('timestampResults');
+
+            if (!input) {
+                results.innerHTML = '<div class="error">✗ Please enter a date/time</div>';
+                return;
+            }
+
+            try {
+                const date = new Date(input);
+
+                if (isNaN(date.getTime())) {
+                    throw new Error('Invalid date format');
+                }
+
+                results.innerHTML = `
+                    <div class="timestamp-display">
+                        <div class="timestamp-item">
+                            <div class="timestamp-label">Unix Timestamp (seconds):</div>
+                            <div class="timestamp-value">${Math.floor(date.getTime() / 1000)}</div>
+                        </div>
+                        <div class="timestamp-item">
+                            <div class="timestamp-label">Unix Timestamp (milliseconds):</div>
+                            <div class="timestamp-value">${date.getTime()}</div>
+                        </div>
+                        <div class="timestamp-item">
+                            <div class="timestamp-label">UTC:</div>
+                            <div class="timestamp-value">${date.toUTCString()}</div>
+                        </div>
+                        <div class="timestamp-item">
+                            <div class="timestamp-label">Local:</div>
+                            <div class="timestamp-value">${date.toString()}</div>
+                        </div>
+                        <div class="timestamp-item">
+                            <div class="timestamp-label">ISO 8601:</div>
+                            <div class="timestamp-value">${date.toISOString()}</div>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                results.innerHTML = `<div class="error">✗ Invalid date: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
